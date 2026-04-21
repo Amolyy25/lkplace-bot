@@ -49,6 +49,21 @@ CREATE TABLE IF NOT EXISTS ghostping_config (
   delete_after_ms INT DEFAULT 10000
 );
 INSERT INTO ghostping_config (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS invite_tracking (
+  id SERIAL PRIMARY KEY,
+  invitee_id TEXT NOT NULL,
+  invitee_tag TEXT,
+  inviter_id TEXT,
+  inviter_tag TEXT,
+  invite_code TEXT,
+  joined_at TIMESTAMPTZ DEFAULT NOW(),
+  left_at TIMESTAMPTZ,
+  still_present BOOLEAN DEFAULT TRUE
+);
+CREATE INDEX IF NOT EXISTS idx_invite_inviter ON invite_tracking(inviter_id);
+CREATE INDEX IF NOT EXISTS idx_invite_invitee ON invite_tracking(invitee_id);
+CREATE INDEX IF NOT EXISTS idx_invite_present ON invite_tracking(still_present);
 `;
 
 async function init() {

@@ -9,7 +9,7 @@ function buildHelpEmbed() {
     `**historique** — sanctions, case`,
     `**admin** — bban, mmute, lockdown`,
     `**tickets** — setupticket, gostping`,
-    `**infos** — members, boosts, help`,
+    `**infos** — members, boosts, invites, help`,
   ];
   return neutral('aide', lines.join('\n'));
 }
