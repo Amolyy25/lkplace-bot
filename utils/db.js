@@ -46,9 +46,10 @@ CREATE TABLE IF NOT EXISTS ticket_claims (
 CREATE TABLE IF NOT EXISTS ghostping_config (
   id INT PRIMARY KEY DEFAULT 1,
   channels TEXT[] DEFAULT '{}',
-  delete_after_ms INT DEFAULT 10000
+  delete_after_ms INT DEFAULT 2000
 );
 INSERT INTO ghostping_config (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+UPDATE ghostping_config SET delete_after_ms = 2000 WHERE id = 1 AND delete_after_ms = 10000;
 
 CREATE TABLE IF NOT EXISTS invite_tracking (
   id SERIAL PRIMARY KEY,

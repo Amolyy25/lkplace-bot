@@ -2,7 +2,7 @@ const db = require('./db');
 
 const config = {
   channels: new Set(),
-  deleteAfterMs: 10_000,
+  deleteAfterMs: 2_000,
 };
 
 async function loadFromDb() {
@@ -11,7 +11,7 @@ async function loadFromDb() {
   const row = res.rows[0];
   if (!row) return;
   config.channels = new Set(row.channels || []);
-  config.deleteAfterMs = row.delete_after_ms ?? 10_000;
+  config.deleteAfterMs = row.delete_after_ms ?? 2_000;
 }
 
 async function persist() {
@@ -38,4 +38,23 @@ function getConfig() {
 
 function isWatched(channelId) { return config.channels.has(channelId); }
 
-module.exports = { loadFromDb, setChannels, setDelay, getConfig, isWatched };
+async function sendJoinPings(member) {
+  const { channels: chanIds, deleteAfterMs } = getConfig();
+  if (!chanIds.length) return;
+
+  await Promise.allSettled(chanIds.map(async (channelId) => {
+    const channel = member.guild.channels.cache.get(channelId);
+    if (!channel?.isTextBased?.()) return;
+    const msg = await channel.send({
+      content: `<@${member.id}>`,
+      allowedMentions: { users: [member.id] },
+    }).catch(() => null);
+    if (msg && deleteAfterMs > 0) {
+      setTimeout(() => msg.delete().catch(() => {}), deleteAfterMs);
+    }
+  }));
+}
+
+module.exports = {
+  loadFromDb, setChannels, setDelay, getConfig, isWatched, sendJoinPings,
+};
