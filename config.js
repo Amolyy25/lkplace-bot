@@ -45,8 +45,8 @@ module.exports = {
   },
 
   ticketCategories: [
-    { id: 'staff', label: 'Devenir staff', description: 'candidature staff' },
-    { id: 'report', label: 'Réclamation / Signalement', description: 'signalement ou abus' },
-    { id: 'question', label: 'Question générale', description: 'question sur le serveur' },
+    { id: 'staff', label: 'Devenir staff', description: 'candidature staff', categoryId: '1496085057511755846' },
+    { id: 'report', label: 'Réclamation / Signalement', description: 'signalement ou abus', categoryId: '1496085059034288169' },
+    { id: 'question', label: 'Question générale', description: 'question sur le serveur', categoryId: '1496085060472930406' },
   ],
 };

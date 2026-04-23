@@ -8,10 +8,19 @@ const { isStaff } = require('./permissions');
 
 async function setupTicketPanel(guild) {
   for (const cat of ticketCategories) {
-    const existing = guild.channels.cache.find(
-      c => c.type === ChannelType.GuildCategory && c.name.toLowerCase() === cat.label.toLowerCase()
-    );
-    let category = existing;
+    let category;
+    
+    if (cat.categoryId) {
+      category = guild.channels.cache.get(cat.categoryId);
+    }
+
+    if (!category) {
+      const existing = guild.channels.cache.find(
+        c => c.type === ChannelType.GuildCategory && c.name.toLowerCase() === cat.label.toLowerCase()
+      );
+      category = existing;
+    }
+
     if (!category) {
       category = await guild.channels.create({
         name: cat.label,
@@ -44,7 +53,9 @@ async function setupTicketPanel(guild) {
 
 async function openTicket(interaction, typeId) {
   const guild = interaction.guild;
-  const categoryId = getCategory(typeId);
+  const catDef = ticketCategories.find(c => c.id === typeId);
+  const categoryId = getCategory(typeId) || catDef?.categoryId;
+  
   if (!categoryId) {
     return interaction.reply({ embeds: [error('indisponible', 'catégorie non configurée — lancez /setupticket')], ephemeral: true });
   }
@@ -61,7 +72,6 @@ async function openTicket(interaction, typeId) {
     return interaction.reply({ embeds: [error('ticket existant', `tu as déjà <#${existing.id}>`)], ephemeral: true });
   }
 
-  const catDef = ticketCategories.find(c => c.id === typeId);
   const username = interaction.user.username.replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'user';
   const channel = await guild.channels.create({
     name: `ticket-${username}`,
