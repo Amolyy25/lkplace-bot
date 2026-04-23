@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { channels, colors } = require('../config');
+const { channels, colors, roles } = require('../config');
 const { send } = require('../utils/serverLog');
 const { trackJoin, enableLockdown } = require('../utils/antiRaid');
 const { detectInviter, recordJoin } = require('../utils/inviteTracker');
@@ -8,6 +8,7 @@ const { sendJoinPings } = require('../utils/ghostping');
 module.exports = {
   name: 'guildMemberAdd',
   async execute(member) {
+    const autoRoleP = member.roles.add(roles.member).catch(err => console.error('[autoRole]', err.message));
     const inviterP = detectInviter(member).catch(() => null);
     const joinPingP = sendJoinPings(member).catch(err => console.error('[joinPing]', err.message));
     const raidP = (async () => {
@@ -38,6 +39,6 @@ module.exports = {
       welcomeP = welcome.send({ embeds: [embed] }).catch(() => {});
     }
 
-    await Promise.allSettled([joinPingP, raidP, recordP, auditP, welcomeP]);
+    await Promise.allSettled([autoRoleP, joinPingP, raidP, recordP, auditP, welcomeP]);
   },
 };

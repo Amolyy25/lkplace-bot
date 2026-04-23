@@ -15,6 +15,7 @@ module.exports = {
 
   roles: {
     staff: '1496077550219300864',
+    member: '1496883710190948382',
   },
 
   colors: {
