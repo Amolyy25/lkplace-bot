@@ -14,7 +14,7 @@ module.exports = {
       return message.reply({ embeds: [error('configuration manquante', 'le rôle membre n\'est pas défini dans la config')] });
     }
 
-    const statusMsg = await message.reply({ embeds: [neutral('ajout des rôles', 'récupération des membres en cours...')] });
+    const statusMsg = await message.reply({ embeds: [neutral('Initialisation', 'Récupération de la liste des membres du serveur en cours...')] });
 
     try {
       const guild = message.guild;
@@ -25,7 +25,7 @@ module.exports = {
         return statusMsg.edit({ embeds: [success('terminé', 'tous les membres ont déjà le rôle')] });
       }
 
-      await statusMsg.edit({ embeds: [neutral('ajout des rôles', `ajout du rôle à ${membersToUpdate.size} membres...`)] });
+      await statusMsg.edit({ embeds: [neutral('Traitement en cours', `Nous avons identifié **${membersToUpdate.size}** membres à mettre à jour. Début de la procédure...`)] });
 
       let count = 0;
       for (const [id, member] of membersToUpdate) {
@@ -34,14 +34,14 @@ module.exports = {
           count++;
           // Update status every 25 members to show progress
           if (count % 25 === 0) {
-            await statusMsg.edit({ embeds: [neutral('ajout des rôles', `progression : ${count}/${membersToUpdate.size}`)] });
+            await statusMsg.edit({ embeds: [neutral('Progression', `Mise à jour en cours : **${count}** membres sur **${membersToUpdate.size}** ont été traités.`)] });
           }
         } catch (err) {
           console.error(`[addmembers] failed for ${member.user.tag}:`, err.message);
         }
       }
 
-      await statusMsg.edit({ embeds: [success('terminé', `le rôle a été ajouté à ${count} membres.`)] });
+      await statusMsg.edit({ embeds: [success('Opération terminée', `La procédure est terminée avec succès. Le rôle a été attribué à **${count}** membres.`)] });
     } catch (err) {
       console.error('[addmembers] error:', err);
       await statusMsg.edit({ embeds: [error('erreur', 'une erreur est survenue lors de l\'ajout des rôles')] });

@@ -65,6 +65,13 @@ CREATE TABLE IF NOT EXISTS invite_tracking (
 CREATE INDEX IF NOT EXISTS idx_invite_inviter ON invite_tracking(inviter_id);
 CREATE INDEX IF NOT EXISTS idx_invite_invitee ON invite_tracking(invitee_id);
 CREATE INDEX IF NOT EXISTS idx_invite_present ON invite_tracking(still_present);
+CREATE TABLE IF NOT EXISTS user_levels (
+  user_id TEXT PRIMARY KEY,
+  xp INTEGER DEFAULT 0,
+  level INTEGER DEFAULT 0,
+  last_xp_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_levels_xp ON user_levels(xp DESC);
 `;
 
 async function init() {

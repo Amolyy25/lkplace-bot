@@ -9,17 +9,17 @@ module.exports = {
   aliases: ['history', 'historique'],
   async execute(message, args) {
     if (!isStaff(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé au staff')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé au staff')] });
     }
     if (!db.available()) {
-      return message.reply({ embeds: [error('db indisponible', 'persistance désactivée')] });
+      return message.reply({ embeds: [error('BDD Indisponible', 'Persistance désactivée')] });
     }
     const user = await resolveUser(message.client, args.shift());
-    if (!user) return message.reply({ embeds: [error('cible invalide', 'mention ou ID incorrect')] });
+    if (!user) return message.reply({ embeds: [error('Cible invalide', 'Mention ou ID incorrect')] });
 
     const [rows, counts] = await Promise.all([listForUser(user.id, 10), countForUser(user.id)]);
     if (!rows?.length) {
-      return message.reply({ embeds: [neutral(`sanctions · ${user.tag}`, 'aucun historique')] });
+      return message.reply({ embeds: [neutral(`Sanctions · ${user.tag}`, 'Aucun historique')] });
     }
 
     const lines = rows.map(r => {

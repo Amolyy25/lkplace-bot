@@ -6,14 +6,14 @@ module.exports = {
   name: 'setupticket',
   async execute(message) {
     if (!isAdmin(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé aux admins')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé aux admins')] });
     }
     try {
       const res = await setupTicketPanel(message.guild);
-      if (!res.ok) return message.reply({ embeds: [error('échec', res.reason)] });
+      if (!res.ok) return message.reply({ embeds: [error('Échec', res.reason)] });
       await message.reply({ embeds: [success('tickets prêts', 'panneau envoyé et catégories initialisées')] });
     } catch (e) {
-      await message.reply({ embeds: [error('échec', e.message)] });
+      await message.reply({ embeds: [error('Échec', e.message)] });
     }
   },
 };

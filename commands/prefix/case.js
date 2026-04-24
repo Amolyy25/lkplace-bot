@@ -8,17 +8,17 @@ module.exports = {
   aliases: ['cas'],
   async execute(message, args) {
     if (!isStaff(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé au staff')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé au staff')] });
     }
     if (!db.available()) {
-      return message.reply({ embeds: [error('db indisponible', 'persistance désactivée')] });
+      return message.reply({ embeds: [error('BDD Indisponible', 'Persistance désactivée')] });
     }
     const id = Number(args[0]);
     if (!Number.isInteger(id) || id < 1) {
-      return message.reply({ embeds: [error('id invalide', 'indique un numéro de cas')] });
+      return message.reply({ embeds: [error('ID Invalide', 'Indique un numéro de cas')] });
     }
     const row = await getCase(id);
-    if (!row) return message.reply({ embeds: [error('introuvable', `aucun cas #${id}`)] });
+    if (!row) return message.reply({ embeds: [error('Introuvable', `Aucun cas #${id}`)] });
 
     const t = TYPE_LABEL[row.type] || row.type;
     const desc = [

@@ -2,7 +2,9 @@ const { EmbedBuilder } = require('discord.js');
 const { colors } = require('../config');
 
 function base(color) {
-  return new EmbedBuilder().setColor(color);
+  return new EmbedBuilder()
+    .setColor(color)
+    .setFooter({ text: 'Lkplace · System' });
 }
 
 function neutral(title, description) {

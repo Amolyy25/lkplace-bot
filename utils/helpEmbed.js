@@ -2,16 +2,16 @@ const { neutral } = require('./embed');
 const { prefix } = require('../config');
 
 function buildHelpEmbed() {
-  const lines = [
-    `préfixe : \`${prefix}\` · ou utilise les slash commands`,
-    '',
-    `**modération** — ban, kick, mute, unmute, warn, clear, unban`,
-    `**historique** — sanctions, case`,
-    `**admin** — bban, mmute, lockdown`,
-    `**tickets** — setupticket, gostping`,
-    `**infos** — members, boosts, invites, help`,
-  ];
-  return neutral('aide', lines.join('\n'));
+  const embed = neutral('Centre d\'Aide Lkplace', 'Retrouvez ci-dessous la liste des commandes disponibles sur le bot.\nLe préfixe actuel est : `' + prefix + '`')
+    .addFields(
+      { name: 'Protection & Modération', value: '`ban`, `kick`, `mute`, `unmute`, `warn`, `clear`, `unban`', inline: false },
+      { name: 'Administration', value: '`bban`, `mmute`, `lockdown`, `addmembers`', inline: false },
+      { name: 'Gestion & Logs', value: '`sanctions`, `case`, `setupticket`', inline: false },
+      { name: 'Informations', value: '`members`, `boosts`, `invites`, `help`, `level`, `leaderboard`', inline: false }
+    )
+    .setTimestamp();
+  
+  return embed;
 }
 
 module.exports = { buildHelpEmbed };

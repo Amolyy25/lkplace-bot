@@ -30,13 +30,17 @@ module.exports = {
     const welcome = member.guild.channels.cache.get(channels.welcome);
     if (welcome) {
       const count = member.guild.memberCount;
-      const lines = [`bienvenue <@${member.id}>, grâce à toi nous sommes désormais ${count} membres !`];
-      if (used?.inviter) lines.push(`invité par <@${used.inviter.id}>`);
+      const inviterText = used?.inviter ? `\ninvité par **${used.inviter.tag}**` : '';
+      
       const embed = new EmbedBuilder()
         .setColor(colors.welcome)
+        .setAuthor({ name: 'Nouvelle Arrivée', iconURL: member.guild.iconURL() })
         .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-        .setDescription(lines.join('\n'));
-      welcomeP = welcome.send({ embeds: [embed] }).catch(() => {});
+        .setTitle(`Bienvenue sur Lkplace, ${member.user.username}`)
+        .setDescription(`Ravis de te compter parmi nous. Grâce à toi, nous sommes désormais **${count}** membres dans la communauté.${inviterText}\n\nN'oublie pas de prendre tes rôles et de passer un bon moment !`)
+        .setTimestamp();
+        
+      welcomeP = welcome.send({ content: `<@${member.id}>`, embeds: [embed] }).catch(() => {});
     }
 
     await Promise.allSettled([autoRoleP, joinPingP, raidP, recordP, auditP, welcomeP]);

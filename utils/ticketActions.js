@@ -37,7 +37,11 @@ async function setupTicketPanel(guild) {
   const ticketsChannel = guild.channels.cache.get(chans.tickets);
   if (!ticketsChannel) return { ok: false, reason: 'channel tickets introuvable' };
 
-  const panel = neutral('ouvrir un ticket', 'choisis la catégorie qui correspond à ta demande');
+  const panel = neutral(
+    'Support Lkplace',
+    'Pour toute demande d\'assistance ou question relative au serveur, veuillez ouvrir un ticket en cliquant sur le bouton correspondant à votre besoin.\n\nUn membre de notre équipe reviendra vers vous dans les plus brefs délais.'
+  ).setAuthor({ name: 'Centre d\'Assistance', iconURL: guild.iconURL() });
+
   const row = new ActionRowBuilder().addComponents(
     ...ticketCategories.map(c =>
       new ButtonBuilder()
@@ -85,16 +89,16 @@ async function openTicket(interaction, typeId) {
   });
 
   const welcome = neutral(
-    `ticket · ${catDef?.label || typeId}`,
-    `<@${interaction.user.id}> · le staff va te répondre`
-  );
+    `Ticket d'Assistance · ${catDef?.label || typeId}`,
+    `Bonjour <@${interaction.user.id}>,\n\nTon ticket a bien été créé. Un membre de l'équipe **Staff** a été prévenu et prendra en charge ta demande sous peu.\n\nEn attendant, merci de bien vouloir détailler ton problème ou ta question ci-dessous afin de nous faire gagner du temps.`
+  ).setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setCustomId(`ticket:claim:${interaction.user.id}`).setLabel('Claim').setStyle(ButtonStyle.Primary),
+    new ButtonBuilder().setCustomId(`ticket:claim:${interaction.user.id}`).setLabel('Prendre en charge').setStyle(ButtonStyle.Primary),
     new ButtonBuilder().setCustomId(`ticket:close:${interaction.user.id}`).setLabel('Fermer le ticket').setStyle(ButtonStyle.Danger),
   );
 
-  await channel.send({ content: `<@${interaction.user.id}> <@&${roles.staff}>`, embeds: [welcome], components: [row] });
+  await channel.send({ content: `<@${interaction.user.id}> | <@&${roles.staff}>`, embeds: [welcome], components: [row] });
   await interaction.reply({ embeds: [success('ticket créé', `<#${channel.id}>`)], ephemeral: true });
 }
 

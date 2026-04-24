@@ -10,14 +10,14 @@ module.exports = {
   name: 'mute',
   async execute(message, args) {
     if (!isStaff(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé au staff')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé au staff')] });
     }
     const member = await resolveMember(message.guild, args.shift());
-    if (!member) return message.reply({ embeds: [error('cible invalide', 'membre introuvable')] });
+    if (!member) return message.reply({ embeds: [error('Cible invalide', 'Membre introuvable')] });
 
     const durationArg = args.shift();
     const ms = parseDurationToMs(durationArg);
-    if (!ms) return message.reply({ embeds: [error('durée invalide', 'format : 10m, 1h, 7j')] });
+    if (!ms) return message.reply({ embeds: [error('Durée invalide', 'Format : 10m, 1h, 7j')] });
 
     const replied = await fetchRepliedMessage(message);
     pendingMod.set(message.id, {
@@ -31,7 +31,7 @@ module.exports = {
     });
 
     await message.reply({
-      embeds: [neutral('mute · choix de la raison', `cible : <@${member.id}> · durée : ${durationArg}`)],
+      embeds: [neutral('Mute · Choix de la raison', `Cible : <@${member.id}> · Durée : ${durationArg}`)],
       components: [buildReasonRow(message.id)],
     });
   },

@@ -9,10 +9,10 @@ module.exports = {
   name: 'warn',
   async execute(message, args) {
     if (!isStaff(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé au staff')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé au staff')] });
     }
     const user = await resolveUser(message.client, args.shift());
-    if (!user) return message.reply({ embeds: [error('cible invalide', 'mention ou ID incorrect')] });
+    if (!user) return message.reply({ embeds: [error('Cible invalide', 'Mention ou ID incorrect')] });
 
     const replied = await fetchRepliedMessage(message);
     pendingMod.set(message.id, {
@@ -24,7 +24,7 @@ module.exports = {
     });
 
     await message.reply({
-      embeds: [neutral('warn · choix de la raison', `cible : <@${user.id}>`)],
+      embeds: [neutral('Warn · Choix de la raison', `Cible : <@${user.id}>`)],
       components: [buildReasonRow(message.id)],
     });
   },

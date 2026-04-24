@@ -4,6 +4,7 @@ const { trackMessage } = require('../utils/antiRaid');
 const { doMute, doBan } = require('../utils/modCore');
 const { error } = require('../utils/embed');
 const { EmbedBuilder } = require('discord.js');
+const { handleMessage } = require('../utils/levels');
 
 const INVITE_RE = /(discord\.gg\/|discord\.com\/invite\/|discordapp\.com\/invite\/)/i;
 
@@ -11,6 +12,7 @@ module.exports = {
   name: 'messageCreate',
   async execute(message, client) {
     if (!message.guild || message.author.bot) return;
+    await handleMessage(message);
 
     const member = message.member;
     const canBypass = member?.permissions?.has(PermissionFlagsBits.ManageGuild)

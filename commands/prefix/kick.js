@@ -9,10 +9,10 @@ module.exports = {
   name: 'kick',
   async execute(message, args) {
     if (!isStaff(message.member)) {
-      return message.reply({ embeds: [error('accès refusé', 'réservé au staff')] });
+      return message.reply({ embeds: [error('Accès refusé', 'Réservé au staff')] });
     }
     const member = await resolveMember(message.guild, args.shift());
-    if (!member) return message.reply({ embeds: [error('cible invalide', 'membre introuvable')] });
+    if (!member) return message.reply({ embeds: [error('Cible invalide', 'Membre introuvable')] });
 
     const replied = await fetchRepliedMessage(message);
     pendingMod.set(message.id, {
@@ -24,7 +24,7 @@ module.exports = {
     });
 
     await message.reply({
-      embeds: [neutral('kick · choix de la raison', `cible : <@${member.id}>`)],
+      embeds: [neutral('Kick · Choix de la raison', `Cible : <@${member.id}>`)],
       components: [buildReasonRow(message.id)],
     });
   },
