@@ -2,8 +2,8 @@ const { isStaff } = require('./permissions');
 const { check } = require('./rateLimit');
 const { resolveUser, resolveMember } = require('./parseUser');
 const { doBan, doKick, doMute, doWarn } = require('./modCore');
-const { error, success, caseFooter } = require('./embed');
-const { labelFor } = require('./reasonSelect');
+const { error, success, caseFooter, neutral } = require('./embed');
+const { labelFor, buildReasonRow, DURATIONS } = require('./reasonSelect');
 const pendingMod = require('./pendingMod');
 
 function composeReason(categoryKey, extra, repliedContent) {
@@ -80,4 +80,28 @@ async function handleReasonSelect(interaction) {
   }
 }
 
-module.exports = { handleReasonSelect };
+async function handleDurationSelect(interaction) {
+  const pendingId = interaction.customId.split(':')[1];
+  const data = pendingMod.get(pendingId);
+
+  if (!data) {
+    return interaction.update({ embeds: [error('expiré', 'demande invalide ou expirée')], components: [] });
+  }
+  if (interaction.user.id !== data.moderatorId) {
+    return interaction.reply({ embeds: [error('refusé', 'seul le modérateur initial peut confirmer')], ephemeral: true });
+  }
+
+  const ms = Number(interaction.values[0]);
+  const duration = DURATIONS.find(d => d.value === interaction.values[0]);
+  
+  data.durationMs = ms;
+  data.durationLabel = duration?.label || `${ms}ms`;
+  pendingMod.set(pendingId, data);
+
+  await interaction.update({
+    embeds: [neutral('Mute · Choix de la raison', `Cible : <@${data.targetId}> · Durée : ${data.durationLabel}`)],
+    components: [buildReasonRow(pendingId)],
+  });
+}
+
+module.exports = { handleReasonSelect, handleDurationSelect };

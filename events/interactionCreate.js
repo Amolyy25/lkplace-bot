@@ -1,7 +1,7 @@
 const muteCmd = require('../commands/slash/mute');
 const gostpingCmd = require('../commands/slash/gostping');
 const { openTicket, claimTicket, closeTicket } = require('../utils/ticketActions');
-const { handleReasonSelect } = require('../utils/reasonHandler');
+const { handleReasonSelect, handleDurationSelect } = require('../utils/reasonHandler');
 const { error } = require('../utils/embed');
 
 module.exports = {
@@ -17,6 +17,7 @@ module.exports = {
       if (interaction.isStringSelectMenu()) {
         if (interaction.customId.startsWith('mute:')) return muteCmd.handleSelect(interaction);
         if (interaction.customId === 'gostping:delay') return gostpingCmd.handleDelay(interaction);
+        if (interaction.customId.startsWith('duration:')) return handleDurationSelect(interaction);
         if (interaction.customId.startsWith('reason:')) return handleReasonSelect(interaction);
       }
 

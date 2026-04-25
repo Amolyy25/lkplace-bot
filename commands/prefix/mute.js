@@ -15,24 +15,41 @@ module.exports = {
     const member = await resolveMember(message.guild, args.shift());
     if (!member) return message.reply({ embeds: [error('Cible invalide', 'Membre introuvable')] });
 
-    const durationArg = args.shift();
-    const ms = parseDurationToMs(durationArg);
-    if (!ms) return message.reply({ embeds: [error('Durée invalide', 'Format : 10m, 1h, 7j')] });
-
+    const firstArg = args.shift();
+    const ms = parseDurationToMs(firstArg);
+    
     const replied = await fetchRepliedMessage(message);
-    pendingMod.set(message.id, {
+    const baseData = {
       action: 'mute',
       targetId: member.id,
       moderatorId: message.author.id,
-      durationMs: ms,
-      durationLabel: durationArg,
-      extraReason: args.join(' ') || null,
       repliedContent: replied?.content?.slice(0, 200) || null,
-    });
+    };
 
-    await message.reply({
-      embeds: [neutral('Mute · Choix de la raison', `Cible : <@${member.id}> · Durée : ${durationArg}`)],
-      components: [buildReasonRow(message.id)],
-    });
+    if (ms) {
+      pendingMod.set(message.id, {
+        ...baseData,
+        durationMs: ms,
+        durationLabel: firstArg,
+        extraReason: args.join(' ') || null,
+      });
+
+      await message.reply({
+        embeds: [neutral('Mute · Choix de la raison', `Cible : <@${member.id}> · Durée : ${firstArg}`)],
+        components: [buildReasonRow(message.id)],
+      });
+    } else {
+      // Re-add firstArg to args if it wasn't a duration
+      if (firstArg) args.unshift(firstArg);
+      pendingMod.set(message.id, {
+        ...baseData,
+        extraReason: args.join(' ') || null,
+      });
+
+      await message.reply({
+        embeds: [neutral('Mute · Choix de la durée', `Cible : <@${member.id}>`)],
+        components: [buildDurationRow(message.id)],
+      });
+    }
   },
 };
