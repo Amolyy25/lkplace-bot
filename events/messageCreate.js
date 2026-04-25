@@ -7,6 +7,7 @@ const { EmbedBuilder } = require('discord.js');
 const { handleMessage } = require('../utils/levels');
 
 const INVITE_RE = /(discord\.gg\/|discord\.com\/invite\/|discordapp\.com\/invite\/)/i;
+const BIO_SPAM_RE = /^[^\w]*#\s*check\s*my\s*bio/i;
 
 module.exports = {
   name: 'messageCreate',
@@ -19,7 +20,10 @@ module.exports = {
       || member?.permissions?.has(PermissionFlagsBits.Administrator);
 
     if (!canBypass) {
-      if (INVITE_RE.test(message.content || '')) {
+      const content = message.content || '';
+      
+      // Anti-invite
+      if (INVITE_RE.test(content)) {
         await message.delete().catch(() => {});
         try {
           await doBan(message.guild, { targetUser: message.author, reason: 'anti-invite automatique', moderator: client.user });
@@ -29,9 +33,33 @@ module.exports = {
           const e = new EmbedBuilder()
             .setColor(colors.error)
             .setTitle('invitation bloquée')
-            .setDescription(`auteur : <@${message.author.id}> · action : ban automatique\n> ${(message.content || '').slice(0, 300)}`);
+            .setDescription(`auteur : <@${message.author.id}> · action : ban automatique\n> ${content.slice(0, 300)}`);
           await logChannel.send({ embeds: [e] }).catch(() => {});
         }
+        return;
+      }
+
+      // Anti-"Check my bio" raid
+      if (BIO_SPAM_RE.test(content)) {
+        await message.delete().catch(() => {});
+        try {
+          await doMute(message.guild, {
+            targetMember: member,
+            reason: 'anti-raid : spam "# Check my bio"',
+            durationMs: 12 * 60 * 60 * 1000,
+            durationLabel: '12h',
+            moderator: client.user,
+          });
+
+          const logChannel = message.guild.channels.cache.get(chans.modLogs);
+          if (logChannel) {
+            const e = new EmbedBuilder()
+              .setColor(colors.error)
+              .setTitle('spam "check my bio" bloqué')
+              .setDescription(`auteur : <@${message.author.id}> · action : mute 12h\n> ${content.slice(0, 300)}`);
+            await logChannel.send({ embeds: [e] }).catch(() => {});
+          }
+        } catch {}
         return;
       }
 
