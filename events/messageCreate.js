@@ -1,10 +1,10 @@
-const { PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { prefix, colors, channels: chans } = require('../config');
 const { trackMessage } = require('../utils/antiRaid');
 const { doMute, doBan } = require('../utils/modCore');
 const { error } = require('../utils/embed');
-const { EmbedBuilder } = require('discord.js');
 const { handleMessage } = require('../utils/levels');
+const { isStaff } = require('../utils/permissions');
 
 const INVITE_RE = /(discord\.gg\/|discord\.com\/invite\/|discordapp\.com\/invite\/)/i;
 const BIO_SPAM_RE = /^[^\w]*#\s*check\s*my\s*bio/i;
