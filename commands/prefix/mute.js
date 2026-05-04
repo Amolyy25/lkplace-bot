@@ -2,7 +2,7 @@ const { isStaff } = require('../../utils/permissions');
 const { resolveMember } = require('../../utils/parseUser');
 const { error, neutral } = require('../../utils/embed');
 const { fetchRepliedMessage } = require('../../utils/actions');
-const { buildReasonRow } = require('../../utils/reasonSelect');
+const { buildReasonRow, buildDurationRow } = require('../../utils/reasonSelect');
 const { parseDurationToMs } = require('../../utils/prefixHelpers');
 const pendingMod = require('../../utils/pendingMod');
 
